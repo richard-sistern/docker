@@ -1,2 +1,3 @@
-# docker
- All things Docker
+# Docker
+
+All things Docker.
