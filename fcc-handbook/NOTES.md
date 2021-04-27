@@ -57,6 +57,26 @@ docker container ls
 docker container ls -all # -a
 ```
 
+### Rename a Container
+
+Containers have two identifiers:
+
+- CONTAINER ID; a random 64 char string
+- NAME; two random words, joined with an underscore
+
+Specify a name for new containers with `--name`, for example, to run `fhsinchy/hello-dock` with the name `hello-dock-container`.
+
+```bash
+docker container run --detach --publish 8888:80 --name hello-dock-container fhsinchy/hello-dock
+```
+
+To rename an existing container.
+
+```bash
+# docker container rename <container identifier> <new name>
+docker container rename gifted_sammet hello-dock-container-2
+```
+
 
 
 ## Examples
