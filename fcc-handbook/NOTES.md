@@ -194,7 +194,7 @@ To access the application, visit `http://127.0.0.1:8080/` in a browser.
 
 ### Interactive Mode
 
-Some images are pre-configured to run a shell by default, be that `sh`, `bash` or a default language shell.
+Some images are pre-configured to run a shell by default, be that `sh`, `bash` or a default language shell.  This can be accessed with the `-it` option:
 
 ```shell
 docker container run -it ubuntu
@@ -212,4 +212,9 @@ docker container run -it ubuntu
 # drwxr-xr-x   1 root root 4096 Apr 28 10:33 ..
 # -rwxr-xr-x   1 root root    0 Apr 28 10:33 .dockerenv
 ```
+
+The `-it` option allows interaction with the underlying containers shell.  This is actually two options, used together.
+
+- The `-i` or `--interactive` option connects to the input stream of the container, so you can send inputs to bash.
+- The `-t` or `--tty` option allocates a pseudo tty to ensure a terminal like experience.
 
