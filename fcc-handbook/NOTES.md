@@ -45,6 +45,12 @@ To run a container as a background process, simply use the `--detach` or `-d` op
 docker container run --detach --publish 8080:80 fhsinchy/hello-dock
 ```
 
+Alternatively, the `container start` command starts any container in detached mode by default and also retains any port configurations made previously.
+
+```shell
+docker container start hello-dock-container
+```
+
 ### List Containers
 
 List running containers with:
@@ -75,6 +81,51 @@ To rename an existing container.
 ```bash
 # docker container rename <container identifier> <new name>
 docker container rename gifted_sammet hello-dock-container-2
+```
+
+### Stop or Kill a Running Container
+
+The `stop` command attempts to shutdown a container gracefully by sending a `SIGTERM` signal.  After a certain period, a `SIGKILL` signal is sent which shuts down the container immediately.
+
+```bash
+# docker container stop <container identifier>
+docker container stop hello-dock-container
+```
+
+Alternatively to send a `SIGKILL` immediately
+
+```shell
+docker container kill hello-dock-container
+```
+
+### Restart a Container
+
+To restart a running container:
+
+```shell
+docker container restart hello-dock-container
+```
+
+### Create a Container Without Running
+
+Use `container create` to create a container from a given image.  You can then use `container start` to run.
+
+```shell
+docker container create --publish 8080:80 fhsinchy/hello-dock
+```
+
+### Remove Old Containers
+
+Containers that have been stopped or killed remain in the system.  These dangling containers take up space and can conflict with newer containers.
+
+```shell
+docker container rm <container identifier>
+```
+
+Alternatively, you can remove all dangling containers in one go with
+
+```shell
+docker container prune
 ```
 
 
