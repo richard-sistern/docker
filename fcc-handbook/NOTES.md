@@ -191,3 +191,25 @@ docker container run --publish 8080:80 fhsinchy/hello-dock
 To allow access into a container, you must map host and container ports.  The example above forwards any requests to 8080 on the host system to 80 inside the container.
 
 To access the application, visit `http://127.0.0.1:8080/` in a browser.
+
+### Interactive Mode
+
+Some images are pre-configured to run a shell by default, be that `sh`, `bash` or a default language shell.
+
+```shell
+docker container run -it ubuntu
+
+# Unable to find image 'ubuntu:latest' locally
+# latest: Pulling from library/ubuntu
+# 345e3491a907: Pull complete
+# 57671312ef6f: Pull complete
+# 5e9250ddb7d0: Pull complete
+# Digest: sha256:cf31af331f38d1d7158470e095b132acd126a7180a54f263d386da88eb681d93
+# Status: Downloaded newer image for ubuntu:latest
+# root@250fd7351d58:/# ls -la
+# total 56
+# drwxr-xr-x   1 root root 4096 Apr 28 10:33 .
+# drwxr-xr-x   1 root root 4096 Apr 28 10:33 ..
+# -rwxr-xr-x   1 root root    0 Apr 28 10:33 .dockerenv
+```
+
