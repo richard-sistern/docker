@@ -178,6 +178,43 @@ A bind mount forms a binding between a local (source) and container (destination
 docker container run --rm -v $(pwd):/zone fhsinchy/rmbyext pdf
 ```
 
+## Working with Images
+
+### Dockerfile
+
+Create Dockerfiles in [Visual Studio Code](https://code.visualstudio.com/) with the [Docker Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker).
+
+In an empty directory, create a new file named `Dockerfile`.
+
+```dockerfile
+# Set the base image, in this instance the latest availible version of Ubuntu
+FROM ubuntu:latest
+
+# Indicate ports that need to be published.  Not a replacement for --publish
+EXPOSE 80
+
+# Executes commands inside the container shell, written as shell or exec
+RUN apt-get update && \ 
+    apt-get install nginx -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+# apt-get clean && rm -rf /var/lib/apt/lists/*
+# clears the package cache, keepping the image clean
+
+# Default command for the image, written as shell or exec
+CMD ["nginx", "-g", "daemon off;"]
+# Here, 'nginx' referes to the NGINX executable, ''-g' and 'daemon off' are parameters
+
+# Note: Running NGINX as a single process inside containers is considered best practise.
+```
+
+To build an image from the `Dockerfile`.
+
+```shell
+# docker image <command> <options>
+
+docker image build .
+```
+
 
 
 ## Examples
@@ -242,5 +279,17 @@ To allow access into a container, you must map host and container ports.  The ex
 
 To access the application, visit `http://127.0.0.1:8080/` in a browser.
 
+### NGINX on Ubuntu
 
+```dockerfile
+FROM ubuntu:latest
+
+EXPOSE 80
+
+RUN apt-get update && \ 
+    apt-get install nginx -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+CMD ["nginx", "-g", "daemon off;"]
+```
 
