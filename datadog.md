@@ -29,6 +29,7 @@ Install the DataDog agent for Ubuntu.
 ```bash
 DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=1101pew10pew10pew DD_SITE="datadoghq.eu" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
 ```
+*Note: the agents page on the DataDog website will specify your own DD_API_KEY*
 
 The agent will report back to DataDog in a minute or two.  In the meantime install a stress testing tool.
 
