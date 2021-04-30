@@ -213,9 +213,41 @@ To build an image from the `Dockerfile`.
 # docker image <command> <options>
 
 docker image build .
+
+# [+] Building 24.0s (6/6) FINISHED
+# => [internal] load build definition from Dockerfile                                                               0.2s
+# => => transferring dockerfile: 220B                                                                               0.0s
+# => [internal] load .dockerignore                                                                                  0.2s
+# => => transferring context: 2B                                                                                    0.0s
+# => [internal] load metadata for docker.io/library/ubuntu:latest                                                   0.0s
+# => [1/2] FROM docker.io/library/ubuntu:latest                                                                     0.1s
+# => [2/2] RUN apt-get update &&     apt-get install nginx -y &&     apt-get clean && rm -rf /var/lib/apt/lists/*  22.8s
+# => exporting to image                                                                                             0.7s
+# => => exporting layers                                                                                            0.6s
+# => => writing image sha256:aa85f745f365ae57a966387293223f426af55438d5eb3c3d1f651fda2e7bdcfa                       0.0s
 ```
 
+Rather than use the sha256 ID, in a PowerShell terminal.
 
+```powershell
+ docker image ls | Select -First 2
+ 
+ # REPOSITORY                         TAG            IMAGE ID       CREATED             SIZE
+# <none>                             <none>         aa85f745f365   About an hour ago   132MB
+```
+
+Run the container image using the supplied ID.
+
+```shell
+docker container run --rm --detach --name custom-nginx-packaged --publish 8080:80 aa85f745f365
+
+docker container ls
+
+# CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS         PORTS                  NAMES
+# ea892fb9ecf3   aa85f745f365   "nginx -g 'daemon of…"   10 seconds ago   Up 8 seconds   0.0.0.0:8080->80/tcp   custom-nginx-packaged
+```
+
+Verify by pointing a browser to http://localhost:8080
 
 ## Examples
 
