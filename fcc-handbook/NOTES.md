@@ -128,6 +128,56 @@ Alternatively, you can remove all dangling containers in one go with
 docker container prune
 ```
 
+### Interactive Mode
+
+Some images are pre-configured to run a shell by default, be that `sh`, `bash` or a default language shell.  This can be accessed with the `-it` option:
+
+```shell
+docker container run -it ubuntu
+
+# Unable to find image 'ubuntu:latest' locally
+# latest: Pulling from library/ubuntu
+# 345e3491a907: Pull complete
+# 57671312ef6f: Pull complete
+# 5e9250ddb7d0: Pull complete
+# Digest: sha256:cf31af331f38d1d7158470e095b132acd126a7180a54f263d386da88eb681d93
+# Status: Downloaded newer image for ubuntu:latest
+# root@250fd7351d58:/# ls -la
+# total 56
+# drwxr-xr-x   1 root root 4096 Apr 28 10:33 .
+# drwxr-xr-x   1 root root 4096 Apr 28 10:33 ..
+# -rwxr-xr-x   1 root root    0 Apr 28 10:33 .dockerenv
+```
+
+The `-it` option allows interaction with the underlying containers shell.  This is actually two options, used together.
+
+- The `-i` or `--interactive` option connects to the input stream of the container, so you can send inputs to bash.
+- The `-t` or `--tty` option allocates a pseudo tty to ensure a terminal like experience.
+
+### Execute Commands
+
+To execute a certain command inside a certain container.
+
+```bash
+# docker container run <image name> <command>
+
+docker container run --rm busybox echo -n my-secret | base64
+
+# bXktc2VjcmV0
+```
+
+### Bind Mounts and Executable Images
+
+Images can be configured to have an entry point set to a custom program instead of a shell.  This example runs a script on a /zone directory inside the container.  As containers are isolated from the host system this only becomes useful when using [bind mounts](https://docs.docker.com/storage/bind-mounts/).
+
+A bind mount forms a binding between a local (source) and container (destination) directory.
+
+```shell
+# --volume <local file system directory absolute path>:<container file system directory absolute path>:<read write access>
+
+docker container run --rm -v $(pwd):/zone fhsinchy/rmbyext pdf
+```
+
 
 
 ## Examples
@@ -192,29 +242,5 @@ To allow access into a container, you must map host and container ports.  The ex
 
 To access the application, visit `http://127.0.0.1:8080/` in a browser.
 
-### Interactive Mode
 
-Some images are pre-configured to run a shell by default, be that `sh`, `bash` or a default language shell.  This can be accessed with the `-it` option:
-
-```shell
-docker container run -it ubuntu
-
-# Unable to find image 'ubuntu:latest' locally
-# latest: Pulling from library/ubuntu
-# 345e3491a907: Pull complete
-# 57671312ef6f: Pull complete
-# 5e9250ddb7d0: Pull complete
-# Digest: sha256:cf31af331f38d1d7158470e095b132acd126a7180a54f263d386da88eb681d93
-# Status: Downloaded newer image for ubuntu:latest
-# root@250fd7351d58:/# ls -la
-# total 56
-# drwxr-xr-x   1 root root 4096 Apr 28 10:33 .
-# drwxr-xr-x   1 root root 4096 Apr 28 10:33 ..
-# -rwxr-xr-x   1 root root    0 Apr 28 10:33 .dockerenv
-```
-
-The `-it` option allows interaction with the underlying containers shell.  This is actually two options, used together.
-
-- The `-i` or `--interactive` option connects to the input stream of the container, so you can send inputs to bash.
-- The `-t` or `--tty` option allocates a pseudo tty to ensure a terminal like experience.
 
