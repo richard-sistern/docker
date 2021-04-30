@@ -13,7 +13,8 @@
 
 ## Software
 
-- [DataDog](./datadog.md)
+- [DataDog](./software/datadog/datadog.md)
+- [NGINX on Ubuntu](./software/nginx-on-ubuntu/Dockerfile)
 
 ## Further Reading
 
