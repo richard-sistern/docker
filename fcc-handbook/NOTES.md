@@ -271,7 +271,47 @@ docker image tag <image id> <image repository>:<image tag>
 docker image tag <image repository>:<image tag> <new image repository>:<new image tag>
 ```
 
+### List and Remove
 
+Similar to container commands.
+
+```shell
+docker image ls
+
+docker image rm <image identifier>
+
+docker image rm custom-nginx:packaged
+```
+
+You can also use (with caution) the prune command.
+
+```shell
+docker image prune --force
+```
+
+### Layers
+
+Images are multi-layered files, this can be seen with the `history` command.
+
+```shell
+docker image history custom-nginx:packaged
+
+# IMAGE          CREATED        CREATED BY                                      SIZE      COMMENT
+# aa85f745f365   19 hours ago   CMD ["nginx" "-g" "daemon off;"]                0B        buildkit.dockerfile.v0
+# <missing>      19 hours ago   RUN /bin/sh -c apt-get update &&     apt-get…   59.2MB    buildkit.dockerfile.v0
+# <missing>      19 hours ago   EXPOSE map[80/tcp:{}]                           0B        buildkit.dockerfile.v0
+# <missing>      7 days ago     /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+# <missing>      7 days ago     /bin/sh -c mkdir -p /run/systemd && echo 'do…   7B
+# <missing>      7 days ago     /bin/sh -c [ -z "$(apt-get indextargets)" ]     0B
+# <missing>      7 days ago     /bin/sh -c set -xe   && echo '#!/bin/sh' > /…   811B
+# <missing>      7 days ago     /bin/sh -c #(nop) ADD file:5c44a80f547b7d68b…   72.7MB
+```
+
+An image comprises of many read-only layers, each recording a new set of changes to the state.  When starting a container you add a new writable layer.  This is based on the concept of union in set theory.
+
+> It allows files and directories of separate file systems, known as branches, to be transparently overlaid, forming a single coherent file system. Contents of directories which have the same path within the merged branches will be seen together in a single merged directory, within the new, virtual filesystem.
+>
+> Source: [Wikipedia](https://en.wikipedia.org/wiki/UnionFS)
 
 ## Examples
 
