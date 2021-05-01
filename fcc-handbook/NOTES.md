@@ -35,7 +35,7 @@ A centralised image registry to upload and download images.
 
 > "Docker uses a client-server architecture. The Docker *client* talks to the Docker *daemon*, which does the heavy lifting of building, running, and distributing your Docker containers" [*Docker documentation*](https://docs.docker.com/get-started/overview/#docker-architecture)
 
-## Usage
+## Working with Containers
 
 ### Detached Mode
 
@@ -248,6 +248,30 @@ docker container ls
 ```
 
 Verify by pointing a browser to http://localhost:8080
+
+### Tagging
+
+To assign custom identifiers (tags).
+
+```shell
+# --tag <image repository>:<image tag>
+
+docker image build --tag custom-nginx:packaged .
+```
+
+*Note: The repository is usually known as the image name and the tag indicates build or version.*
+
+To tag an existing image.
+
+```shell
+docker image tag <image id> <image repository>:<image tag>
+
+## or ##
+
+docker image tag <image repository>:<image tag> <new image repository>:<new image tag>
+```
+
+
 
 ## Examples
 
