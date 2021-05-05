@@ -52,5 +52,5 @@ stress --cpu 4
 
 Navigate to the `System - Metrics` dashboard in DataDog.  The `CPU usage (%)` should now show the system under load.
 
-![datadog_cpu](./assets/datadog_cpu.png)
+![datadog_cpu](/assets/datadog_cpu.png)
 
