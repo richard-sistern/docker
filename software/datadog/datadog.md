@@ -21,7 +21,7 @@ docker container run -it ubuntu
 Install Curl.
 
 ```bash
-apt-get update; apt-get install curl
+apt-get update && apt-get install curl
 ```
 
 Install the DataDog agent for Ubuntu.
