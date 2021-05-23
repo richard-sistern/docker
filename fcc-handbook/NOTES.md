@@ -313,6 +313,54 @@ An image comprises of many read-only layers, each recording a new set of changes
 >
 > Source: [Wikipedia](https://en.wikipedia.org/wiki/UnionFS)
 
+### Optimising
+
+Remove packages required for building but not running.  Modify the NGINX from Source Dockerfile 
+
+```dockerfile
+FROM ubuntu:latest
+
+EXPOSE 80
+
+ARG FILENAME="nginx-1.19.2"
+ARG EXTENSION="tar.gz"
+
+ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+
+RUN apt-get update && \
+    apt-get install build-essential \ 
+                    libpcre3 \
+                    libpcre3-dev \
+                    zlib1g \
+                    zlib1g-dev \
+                    libssl1.1 \
+                    libssl-dev \
+                    -y && \
+    tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} && \
+    cd ${FILENAME} && \
+    ./configure \
+        --sbin-path=/usr/bin/nginx \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error.log \
+        --http-log-path=/var/log/nginx/access.log \
+        --with-pcre \
+        --pid-path=/var/run/nginx.pid \
+        --with-http_ssl_module && \
+    make && make install && \
+    cd / && rm -rfv /${FILENAME} && \
+    apt-get remove build-essential \ 
+                    libpcre3-dev \
+                    zlib1g-dev \
+                    libssl-dev \
+                    -y && \
+    apt-get autoremove -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+The `RUN apt-get....` command is now doing a lot more.  If you install packages and then remove them in separate RUN instructions they will create separate layers within the image.  Although the final image won't have the removed packages, they will still exist in the layers comprising the image.
+
 ## Examples
 
 ### Hello World
@@ -438,3 +486,4 @@ docker container ls
 ```
 
 To access the application, visit `http://127.0.0.1:8080/` in a browser.
+
