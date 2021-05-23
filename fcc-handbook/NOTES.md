@@ -389,3 +389,52 @@ RUN apt-get update && \
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
+### NGINX from Source
+
+```dockerfile
+FROM ubuntu:latest
+
+RUN apt-get update && \
+    apt-get install build-essential\ 
+                    libpcre3 \
+                    libpcre3-dev \
+                    zlib1g \
+                    zlib1g-dev \
+                    libssl1.1 \
+                    libssl-dev \
+                    -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY nginx-1.19.2.tar.gz .
+
+RUN tar -xvf nginx-1.19.2.tar.gz && rm nginx-1.19.2.tar.gz
+
+RUN cd nginx-1.19.2 && \
+    ./configure \
+        --sbin-path=/usr/bin/nginx \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error.log \
+        --http-log-path=/var/log/nginx/access.log \
+        --with-pcre \
+        --pid-path=/var/run/nginx.pid \
+        --with-http_ssl_module && \
+    make && make install
+
+RUN rm -rf /nginx-1.19.2
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Run a container using the `custom-nginx:built` tag
+
+```shell
+docker container run --rm --detach --name custom-nginx-built --publish 8080:80 custom-nginx:built
+
+# 98cc8fa65d44f4b04368c5408955debdd7debd13db07ab94f475861ccb10d9a2
+
+docker container ls
+# CONTAINER ID   IMAGE                COMMAND                  CREATED          STATUS          PORTS                  NAMES
+# 98cc8fa65d44   custom-nginx:built   "nginx -g 'daemon of…"   19 seconds ago   Up 18 seconds   0.0.0.0:8080->80/tcp   custom-nginx-built
+```
+
+To access the application, visit `http://127.0.0.1:8080/` in a browser.
