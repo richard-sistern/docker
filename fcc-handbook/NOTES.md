@@ -361,6 +361,53 @@ CMD ["nginx", "-g", "daemon off;"]
 
 The `RUN apt-get....` command is now doing a lot more.  If you install packages and then remove them in separate RUN instructions they will create separate layers within the image.  Although the final image won't have the removed packages, they will still exist in the layers comprising the image.
 
+Moving to Alpine Linux can also save space as the base image comes in at 2.8 MB.
+
+```dockerfile
+FROM alpine:latest
+
+EXPOSE 80
+
+ARG FILENAME="nginx-1.19.2"
+ARG EXTENSION="tar.gz"
+
+ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+
+RUN apk add --no-cache pcre zlib && \
+    apk add --no-cache \
+            --virtual .build-deps \
+            build-base \ 
+            pcre-dev \
+            zlib-dev \
+            openssl-dev && \
+    tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} && \
+    cd ${FILENAME} && \
+    ./configure \
+        --sbin-path=/usr/bin/nginx \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error.log \
+        --http-log-path=/var/log/nginx/access.log \
+        --with-pcre \
+        --pid-path=/var/run/nginx.pid \
+        --with-http_ssl_module && \
+    make && make install && \
+    cd / && rm -rfv /${FILENAME} && \
+    apk del .build-deps
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+Changes from Ubuntu:
+
+- Instead of `apt-get install`, we now use `apk add`.  The `--no-cache` option prevents caching of downloaded packages.  
+- The `--virtual` option is used to bundle packages into a single virtual package.  Packages that are only required for building the program are labelled with `.build-deps` for easier removal later.
+
+```shell
+docker image build --tag custom-nginx:built .
+```
+
+
+
 ## Examples
 
 ### Hello World
@@ -437,7 +484,7 @@ RUN apt-get update && \
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-### NGINX from Source
+### NGINX from Source on Ubuntu
 
 ```dockerfile
 FROM ubuntu:latest
@@ -486,4 +533,44 @@ docker container ls
 ```
 
 To access the application, visit `http://127.0.0.1:8080/` in a browser.
+
+### NGINX from Source on Alpine
+
+```dockerfile
+FROM alpine:latest
+
+EXPOSE 80
+
+ARG FILENAME="nginx-1.19.2"
+ARG EXTENSION="tar.gz"
+
+ADD https://nginx.org/download/${FILENAME}.${EXTENSION} .
+
+RUN apk add --no-cache pcre zlib && \
+    apk add --no-cache \
+            --virtual .build-deps \
+            build-base \ 
+            pcre-dev \
+            zlib-dev \
+            openssl-dev && \
+    tar -xvf ${FILENAME}.${EXTENSION} && rm ${FILENAME}.${EXTENSION} && \
+    cd ${FILENAME} && \
+    ./configure \
+        --sbin-path=/usr/bin/nginx \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error.log \
+        --http-log-path=/var/log/nginx/access.log \
+        --with-pcre \
+        --pid-path=/var/run/nginx.pid \
+        --with-http_ssl_module && \
+    make && make install && \
+    cd / && rm -rfv /${FILENAME} && \
+    apk del .build-deps
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+```shell
+docker image build --tag custom-nginx:built .
+```
 
