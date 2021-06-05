@@ -406,6 +406,43 @@ Changes from Ubuntu:
 docker image build --tag custom-nginx:built .
 ```
 
+### Executable Images
+
+To create an image to run `rmbyext` automatically:
+
+```dockerfile
+FROM python:3-alpine
+
+WORKDIR /zone
+
+RUN apk add --no-cache git && \
+    pip install git+https://github.com/fhsinchy/rmbyext.git#egg=rmbyext && \
+    apk del git
+
+ENTRYPOINT [ "rmbyext" ]
+```
+
+- The `FROM` instruction uses a [Python](https://hub.docker.com/_/python) base image.  The `3-alpine` tag indicates we are using the Alpine version
+- The `WORKDIR` instruction sets the default working directory to /zone.  This is arbitrary and can be set to anything
+- The `RUN` command installs git, which is then used to install rmbyext via pip
+- The `ENTRYPOINT` instruction sets the `rmbyext` script as the entry-point for the image
+
+```shell
+docker image build --tag rmbyext .
+```
+
+To run on Linux
+
+```shell
+docker container run --rm -v $(pwd):/zone rmbyext pdf
+```
+
+To run in PS
+
+```shell
+docker container run --rm -v ${PWD}:/zone rmbyext pdf
+```
+
 
 
 ## Examples
@@ -572,5 +609,23 @@ CMD ["nginx", "-g", "daemon off;"]
 
 ```shell
 docker image build --tag custom-nginx:built .
+```
+
+### Executable Image
+
+```dockerfile
+FROM python:3-alpine
+
+WORKDIR /zone
+
+RUN apk add --no-cache git && \
+    pip install git+https://github.com/fhsinchy/rmbyext.git#egg=rmbyext && \
+    apk del git
+
+ENTRYPOINT [ "rmbyext" ]
+```
+
+```shell
+docker image build --tag rmbyext .
 ```
 
