@@ -443,6 +443,38 @@ To run in PS
 docker container run --rm -v ${PWD}:/zone rmbyext pdf
 ```
 
+### Sharing
+
+*Requires an account with [Docker Hub](https://hub.docker.com/)*
+
+Log in with the CLI:
+
+```shell
+docker login
+
+# Login with your Docker ID to push and pull images from Docker Hub...
+#...
+# Login Succeeded
+```
+
+To share online an image needs to be tagged:
+
+```shell
+--tag <image repository>:<image tag>
+```
+
+For example:
+
+```shell
+# fhsinchy is the username
+
+docker image build --tag fhsinchy/custom-nginx:latest --file Dockerfile.built .
+
+# Push to hub
+# docker image push <image repository>:<image tag>
+docker image push fhsinchy/custom-nginx:latest
+```
+
 
 
 ## Examples
